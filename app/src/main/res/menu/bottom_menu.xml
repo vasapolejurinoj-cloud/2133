@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/button_home"
+        android:title="home" />
+    <item
+        android:id="@+id/button2"
+        android:title="button2" />
+    <item
+        android:id="@+id/button3"
+        android:title="button3" />
+</selector>
