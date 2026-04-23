@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/button_home"
-        android:title="home" />
+        android:id="@+id/homeFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Главная" />
+
     <item
-        android:id="@+id/button2"
-        android:title="button2" />
+        android:id="@+id/favoritesFragment"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="Избранное" />
+
     <item
-        android:id="@+id/button3"
-        android:title="button3" />
-</selector>
+        android:id="@+id/profileFragment"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="Профиль" />
+
+</menu>
