@@ -1,20 +1,18 @@
 package com.example.bogatyrev;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextInputEditText emailInput, passwordInput;
-    private MaterialButton loginButton;
-    private TextView registerLink, errorText;
+    private EditText etEmail, etPassword;
+    private Button btnLogin;
+    private TextView tvRegister;
     private DatabaseAdapter dbAdapter;
     private SessionManager sessionManager;
 
@@ -23,64 +21,58 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        initViews();
+
+        dbAdapter = new DatabaseAdapter(this);
         sessionManager = new SessionManager(this);
+
+        // Проверяем, не вошел ли уже пользователь
         if (sessionManager.isLoggedIn()) {
-            startMainActivity();
+            navigateToMain();
             return;
         }
 
-        initViews();
-        setupListeners();
-    }
-
-    @SuppressLint("WrongViewCast")
-    private void initViews() {
-        emailInput = findViewById(R.id.emailInput);
-        passwordInput = findViewById(R.id.passwordInput);
-        loginButton = findViewById(R.id.loginButton);
-        registerLink = findViewById(R.id.registerLink);
-        errorText = findViewById(R.id.errorText);
-        dbAdapter = new DatabaseAdapter(this);
-    }
-
-    private void setupListeners() {
-        loginButton.setOnClickListener(v -> login());
-        registerLink.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        btnLogin.setOnClickListener(v -> loginUser());
+        tvRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
-    private void login() {
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
+    private void initViews() {
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvRegister = findViewById(R.id.tvRegister);
+    }
 
-        if (TextUtils.isEmpty(email)) {
-            showError("Введите email");
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            showError("Введите пароль");
+    private void loginUser() {
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
         dbAdapter.open();
-        boolean success = dbAdapter.loginUser(email, password);
+
+        // Теперь метод возвращает long (ID пользователя)
+        long userId = dbAdapter.loginUser(email, password);
+
         dbAdapter.close();
 
-        if (success) {
+        if (userId != -1) {  // Проверяем, что пользователь найден (ID не равен -1)
+            // Сохраняем сессию
             sessionManager.setLogin(true, email);
-            startMainActivity();
+            Toast.makeText(this, "Вход выполнен успешно", Toast.LENGTH_SHORT).show();
+            navigateToMain();
         } else {
-            showError("Неверный email или пароль");
+            Toast.makeText(this, "Неверный email или пароль", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showError(String message) {
-        errorText.setText(message);
-        errorText.setVisibility(View.VISIBLE);
-    }
-
-    private void startMainActivity() {
+    private void navigateToMain() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

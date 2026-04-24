@@ -10,23 +10,19 @@ public class Item implements Parcelable {
     private double price;
     private boolean isFavorite;
 
-    // Конструкторы
-    public Item() {
-        this.id = -1;
-        this.name = "";
-        this.description = "";
-        this.price = 0.0;
-        this.isFavorite = false;
-    }
+    // Конструктор по умолчанию
+    public Item() {}
 
+    // Конструктор для создания нового товара (без ID)
     public Item(String name, String description, double price) {
-        this.id = -1;
+        this.id = 0;
         this.name = name;
         this.description = description;
         this.price = price;
         this.isFavorite = false;
     }
 
+    // Конструктор для загрузки из БД (со всеми полями)
     public Item(long id, String name, String description, double price, boolean isFavorite) {
         this.id = id;
         this.name = name;
@@ -35,52 +31,20 @@ public class Item implements Parcelable {
         this.isFavorite = isFavorite;
     }
 
-    // Getters и Setters
-    public long getId() {
-        return id;
-    }
+    // Геттеры и сеттеры
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+    public boolean isFavorite() { return isFavorite; }
+    public void setFavorite(boolean favorite) { isFavorite = favorite; }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
-    // Parcelable implementation
     @Override
-    public int describeContents() {
-        return 0;
-    }
+    public int describeContents() { return 0; }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
